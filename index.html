@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Load Combinations — AS 1170.0</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="logo.js"></script>
+<style>
+  :root{--bg:#0f1722;--panel:#16202e;--panel2:#1d2a3a;--line:#2a3a4f;--txt:#e8eef5;--muted:#9fb0c3;--accent:#3da9fc;--good:#34c77b;--bad:#ff5c6c;--warn:#ffb454;}
+  *{box-sizing:border-box}
+  body{margin:0;font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--txt)}
+  header{padding:18px 28px;border-bottom:1px solid var(--line);background:var(--panel);display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+  header h1{font-size:18px;margin:0;font-weight:650} header .sub{color:var(--muted);font-size:13px}
+  .wrap{max-width:1200px;margin:0 auto;padding:22px 28px 90px;display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  @media(max-width:940px){.wrap{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:20px}
+  .card h2{font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin:0 0 14px;font-weight:650}
+  .card h2 .note{text-transform:none;letter-spacing:0;color:var(--muted);font-weight:400;font-size:12px}
+  label{display:block;font-size:12.5px;color:var(--muted);margin:0 0 4px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px;margin-bottom:12px} .row.three{grid-template-columns:1fr 1fr 1fr}
+  input,select{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:8px 10px;font-size:14px;font-family:inherit}
+  input:focus,select:focus{outline:none;border-color:var(--accent)}
+  .hint{font-size:11.5px;color:var(--muted);margin-top:3px}
+  .sticky{position:sticky;top:22px}
+  table.out{width:100%;border-collapse:collapse;font-size:13.5px}
+  table.out td,table.out th{padding:6px 6px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}
+  table.out td:last-child,table.out th:last-child{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  table.out th{color:var(--accent);font-weight:650;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
+  table.out tr.gov td{background:rgba(52,199,123,.12)} table.out tr.gov td:last-child{color:var(--good);font-weight:700}
+  table.out tr.up td:last-child{color:var(--warn)}
+  .actions{display:flex;gap:10px;margin-top:16px}
+  button{cursor:pointer;border:none;border-radius:9px;padding:11px 18px;font-size:14px;font-weight:600;font-family:inherit}
+  button.primary{background:var(--accent);color:#04121f} button.ghost{background:var(--panel2);color:var(--txt);border:1px solid var(--line)}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  .disclaimer{font-size:11.5px;color:var(--muted);line-height:1.5;margin-top:14px;border-top:1px dashed var(--line);padding-top:12px}
+  .pill{display:inline-block;font-size:11px;color:var(--muted);background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:2px 7px;margin-left:6px}
+  .gov-line{font-size:13px;margin:4px 0;color:var(--muted)} .gov-line b{color:var(--txt)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Load Combinations — AS 1170.0</h1>
+  <span class="sub">ULS &amp; SLS action combinations for G, Q, W, S, E · enter action magnitudes in any consistent unit</span>
+  <a href="/" style="margin-left:auto;align-self:center;color:var(--accent);text-decoration:none;font-size:13px;font-weight:600;border:1px solid var(--line);border-radius:8px;padding:6px 13px;white-space:nowrap">← All tools</a>
+</header>
+
+<div class="wrap">
+  <div>
+    <div class="card">
+      <h2>Project details</h2>
+      <div class="row">
+        <div class="field"><label>Company / consultant</label><input id="company" value="Mayfair"></div>
+        <div class="field"><label>Job / reference no.</label><input id="jobno" placeholder="e.g. G9601"></div>
+      </div>
+      <div class="row">
+        <div class="field"><label>Project / element</label><input id="project" placeholder="e.g. ground floor beam B1"></div>
+        <div class="field"><label>Prepared by</label><input id="author" placeholder="Name"></div>
+      </div>
+      <div class="row three">
+        <div class="field"><label>Role / reg. no.</label><input id="role" placeholder="e.g. Design Engineer"></div>
+        <div class="field"><label>Date</label><input id="rdate" type="date"></div>
+        <div class="field"><label>Unit</label><input id="unit" value="kN"><div class="hint">Label only.</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Actions <span class="note">— magnitudes (same point/member)</span></h2>
+      <div class="row three">
+        <div class="field"><label>G — permanent / dead</label><input id="G" type="number" step="any" value="10"></div>
+        <div class="field"><label>Q — imposed / live</label><input id="Q" type="number" step="any" value="8"></div>
+        <div class="field"><label>W<sub>u</sub> — ultimate wind</label><input id="Wu" type="number" step="any" value="6"></div>
+      </div>
+      <div class="row three">
+        <div class="field"><label>W<sub>s</sub> — serviceability wind</label><input id="Ws" type="number" step="any" value="4"></div>
+        <div class="field"><label>S<sub>u</sub> — snow <span class="pill">opt</span></label><input id="Su" type="number" step="any" value=""></div>
+        <div class="field"><label>E<sub>u</sub> — earthquake <span class="pill">opt</span></label><input id="Eu" type="number" step="any" value=""></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Combination factors <span class="note">— AS 1170.0 / 1170.1 Table 4.1</span></h2>
+      <div class="row">
+        <div class="field"><label>Occupancy preset</label>
+          <select id="preset">
+            <option value="res">Floors — residential / domestic</option>
+            <option value="office">Floors — office</option>
+            <option value="retail">Floors — retail / assembly</option>
+            <option value="storage">Floors — storage</option>
+            <option value="roof">Roof (trafficable: no)</option>
+            <option value="custom">Custom…</option>
+          </select>
+        </div>
+        <div class="field" style="display:flex;align-items:flex-end"><div class="hint">Sets ψ factors; edit below if needed.</div></div>
+      </div>
+      <div class="row three">
+        <div class="field"><label>ψ<sub>c</sub> combination</label><input id="psic" type="number" step="any" value="0.4"></div>
+        <div class="field"><label>ψ<sub>s</sub> short-term</label><input id="psis" type="number" step="any" value="0.7"></div>
+        <div class="field"><label>ψ<sub>l</sub> long-term</label><input id="psil" type="number" step="any" value="0.4"></div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="sticky">
+      <div class="card">
+        <h2>Ultimate limit state (strength)</h2>
+        <div class="gov-line">Governing ULS (gravity): <b id="govU">—</b></div>
+        <table class="out"><thead><tr><th>Combination</th><th>Value</th></tr></thead><tbody id="ulsBody"></tbody></table>
+        <h2 style="margin-top:18px">Serviceability limit state</h2>
+        <table class="out"><thead><tr><th>Combination</th><th>Value</th></tr></thead><tbody id="slsBody"></tbody></table>
+        <div class="actions">
+          <button class="primary" id="pdfBtn" disabled>Download Report</button>
+          <button class="ghost" id="resetBtn">Reset</button>
+        </div>
+        <div class="disclaimer">
+          Per AS 1170.0 Section 4 (ULS Cl 4.2.2, SLS Cl 4.3). Actions are entered as magnitudes acting in the same sense;
+          apply the correct sign/direction for reversal &amp; uplift (the 0.9G + W<sub>u</sub> case is the reversal/uplift check).
+          Confirm ψ factors against AS 1170.0/1170.1 for the actual occupancy. Calculation aid, not design certification.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const num = id => { const v = parseFloat($(id).value); return isNaN(v) ? null : v; };
+const fmt = (x,dp=2) => (x===null||x===undefined||!isFinite(x)) ? "—" : Number(x).toLocaleString(undefined,{minimumFractionDigits:dp,maximumFractionDigits:dp});
+$("rdate").valueAsDate = new Date();
+const PRESETS = { res:[0.4,0.7,0.4], office:[0.4,0.7,0.4], retail:[0.6,0.7,0.6], storage:[0.6,1.0,0.6], roof:[0,0.7,0] };
+$("preset").addEventListener("change",()=>{ const p=PRESETS[$("preset").value]; if(p){ $("psic").value=p[0]; $("psis").value=p[1]; $("psil").value=p[2]; } calc(); });
+document.querySelectorAll("input,select").forEach(el=>{ el.addEventListener("input",calc); el.addEventListener("change",calc); });
+$("resetBtn").addEventListener("click",()=>location.reload());
+
+let LAST=null;
+function calc(){
+  const G=num("G")||0,Q=num("Q")||0,Wu=num("Wu")||0,Ws=num("Ws")||0,Su=num("Su"),Eu=num("Eu");
+  const pc=num("psic")||0,ps=num("psis")||0,pl=num("psil")||0;
+  const uls=[
+    ["1.35 G", 1.35*G],
+    ["1.2 G + 1.5 Q", 1.2*G+1.5*Q],
+    ["1.2 G + 1.5 ψl Q", 1.2*G+1.5*pl*Q],
+    ["1.2 G + Wu + ψc Q", 1.2*G+Wu+pc*Q],
+    ["0.9 G + Wu  (reversal / uplift)", 0.9*G+Wu, "up"],
+  ];
+  if(Su!==null) uls.push(["1.2 G + Su + ψc Q", 1.2*G+Su+pc*Q]);
+  if(Eu!==null) uls.push(["G + Eu + ψc Q", G+Eu+pc*Q]);
+  const sls=[
+    ["G + ψs Q  (short-term)", G+ps*Q],
+    ["G + ψl Q  (long-term)", G+pl*Q],
+    ["Ws  (wind)", Ws],
+    ["G + ψl Q + Ws", G+pl*Q+Ws],
+  ];
+  // governing gravity ULS = max of the gravity combos (exclude uplift reversal)
+  const grav = uls.filter(r=>r[2]!=="up");
+  let gov=grav[0]; grav.forEach(r=>{ if(r[1]>gov[1]) gov=r; });
+  const upRow = uls.find(r=>r[2]==="up");
+  const netUplift = Wu - 0.9*G; // >0 means net uplift demand
+  LAST={G,Q,Wu,Ws,Su,Eu,pc,ps,pl,uls,sls,gov,upRow,netUplift,unit:$("unit").value};
+  render(LAST);
+}
+function render(o){
+  $("govU").textContent = o.gov[0]+" = "+fmt(o.gov[1],2)+" "+o.unit;
+  $("ulsBody").innerHTML = o.uls.map(r=>`<tr class="${r===o.gov?'gov':''} ${r[2]==='up'?'up':''}"><td>${r[0]}</td><td>${fmt(r[1],2)} ${o.unit}</td></tr>`).join("")
+    + (o.netUplift>0?`<tr class="up"><td>↳ net uplift (Wu − 0.9G)</td><td>${fmt(o.netUplift,2)} ${o.unit} ↑</td></tr>`:"");
+  $("slsBody").innerHTML = o.sls.map(r=>`<tr><td>${r[0]}</td><td>${fmt(r[1],2)} ${o.unit}</td></tr>`).join("");
+  $("pdfBtn").disabled=false;
+}
+calc();
+
+function san(s){return String(s).replace(/ψ/g,"psi").replace(/Δ/g,"d").replace(/→/g,"->").replace(/↳/g,">").replace(/↑/g,"(up)").replace(/−/g,"-").replace(/·/g,".").replace(/≥/g,">=").replace(/≤/g,"<=").replace(/×/g,"x").replace(/²/g,"^2").replace(/[\uD800-\uDFFF]/g,"").replace(/[Ͱ-Ͽ⅐-↏←-⇿∀-⋿⌀-➿]/g,"?");}
+$("pdfBtn").addEventListener("click",()=>{ if(!LAST) return; try{ buildPDF(LAST); }catch(e){ console.error(e); alert("PDF lib not loaded; using print."); window.print(); } });
+function buildPDF(o){
+  const { jsPDF }=window.jspdf; const doc=new jsPDF({unit:"mm",format:"a4"});
+  const _t=doc.text.bind(doc); doc.text=function(s,...r){return _t(Array.isArray(s)?s.map(san):san(s),...r);};
+  const _s=doc.splitTextToSize.bind(doc); doc.splitTextToSize=function(s,...r){return _s(san(String(s)),...r);};
+  const M=18,W=210,right=W-M; let y=M; const f=id=>($(id).value||"—"); const txt=(s,x,yy,op)=>doc.text(String(s),x,yy,op);
+  let tx=M; if(window.MAYFAIR_LOGO&&window.MAYFAIR_LOGO.dataUri){ const lw=40,lh=lw*window.MAYFAIR_LOGO.h/window.MAYFAIR_LOGO.w; try{ doc.addImage(window.MAYFAIR_LOGO.dataUri,window.MAYFAIR_LOGO.type||"PNG",M,9,lw,lh); tx=M+lw+6; }catch(e){} }
+  doc.setTextColor(20,28,38); doc.setFont("helvetica","bold"); doc.setFontSize(14); txt(f("company")+" — Load Combinations", tx,14);
+  doc.setFont("helvetica","normal"); doc.setFontSize(9); doc.setTextColor(90,105,120); txt("AS 1170.0 Section 4 — ULS & SLS action combinations", tx,19.5);
+  doc.setDrawColor(244,180,130); doc.setLineWidth(0.8); doc.line(M,24,W-M,24); doc.setLineWidth(0.2); y=32; doc.setTextColor(20,28,38);
+  y=kv(doc,"Project",[["Project / element",f("project")],["Job / ref.",f("jobno")],["Prepared by",f("author")],["Date",f("rdate")],["Role / reg.",f("role")],["Unit",f("unit")]],M,y,W);
+  y=kv(doc,"Actions ("+o.unit+")",[["G permanent",fmt(o.G,2)],["Q imposed",fmt(o.Q,2)],["Wu ult. wind",fmt(o.Wu,2)],["Ws serv. wind",fmt(o.Ws,2)],["psi_c / psi_s / psi_l",fmt(o.pc,2)+" / "+fmt(o.ps,2)+" / "+fmt(o.pl,2)],["",""]],M,y,W);
+  y=tbl(doc,"Ultimate limit state (strength) — Cl 4.2.2", o.uls.map(r=>[r[0], fmt(r[1],2)+" "+o.unit+(r===o.gov?"  <= governs":"")]),M,y,W);
+  if(o.netUplift>0){ y=ensure(doc,y,6,M); doc.setFont("helvetica","bold"); doc.setFontSize(9.3); doc.setTextColor(180,110,20); txt("Net uplift (Wu - 0.9G) = "+fmt(o.netUplift,2)+" "+o.unit+" (uplift) - provide tie-down.",M+1.5,y); y+=6; doc.setTextColor(20,28,38); }
+  y=tbl(doc,"Serviceability limit state — Cl 4.3", o.sls.map(r=>[r[0], fmt(r[1],2)+" "+o.unit]),M,y,W);
+  y=ensure(doc,y+2,16,M); doc.setFont("helvetica","normal"); doc.setFontSize(8); doc.setTextColor(110);
+  y=wrap(doc,"Per AS 1170.0 Section 4. Actions entered as magnitudes acting in the same sense; apply correct signs for reversal/uplift (0.9G + Wu is the reversal/uplift case). Confirm psi factors against AS 1170.0/1170.1 for the occupancy. Calculation aid, not design certification.",M,y,W-2*M,3.4);
+  y=ensure(doc,y+4,20,M); doc.setDrawColor(180); doc.line(M,y+9,M+70,y+9); doc.line(right-70,y+9,right,y+9); doc.setFontSize(8.5); doc.setTextColor(90);
+  txt("Prepared by: "+f("author")+"  "+f("role"),M,y+14); txt("Date: "+f("rdate"),right-70,y+14);
+  doc.save((f("jobno")||"loads").replace(/[^\w -]+/g,"_").trim()+" - Comps.pdf");
+}
+function ensure(doc,y,need,M){ if(y+need>284){doc.addPage(); return M;} return y; }
+function wrap(doc,s,x,y,w,lh){ doc.splitTextToSize(String(s),w).forEach(l=>{y=ensure(doc,y,lh,18); doc.text(l,x,y); y+=lh;}); return y; }
+function kv(doc,t,p,M,y,W){ y=ensure(doc,y,14,M); doc.setFont("helvetica","bold"); doc.setFontSize(10.5); doc.setTextColor(20,28,38); doc.text(t,M,y); y+=5; doc.setFont("helvetica","normal"); doc.setFontSize(9.5); const cw=(W-2*M)/2;
+  for(let i=0;i<p.length;i+=2){ y=ensure(doc,y,6,M); [p[i],p[i+1]].forEach((q,j)=>{ if(!q||q[0]==="")return; const x=M+j*cw; doc.setTextColor(120); doc.text(q[0]+":",x,y); doc.setTextColor(20,28,38); const lb=doc.getTextWidth(q[0]+": "); doc.text(String(q[1]),x+lb+1,y); }); y+=5.4; } return y+2; }
+function tbl(doc,t,rows,M,y,W){ y=ensure(doc,y,16,M); doc.setFont("helvetica","bold"); doc.setFontSize(10.5); doc.setTextColor(20,28,38); doc.text(t,M,y); y+=4; const x2=W-M; doc.setFontSize(9.3);
+  rows.forEach((r,i)=>{ y=ensure(doc,y,6,M); if(i%2===0){ doc.setFillColor(244,247,250); doc.rect(M,y-3.4,W-2*M,5.6,"F"); } doc.setFont("helvetica","normal"); doc.setTextColor(60); doc.text(String(r[0]),M+1.5,y); doc.setFont("helvetica","bold"); doc.setTextColor(20,28,38); doc.text(String(r[1]),x2-1.5,y,{align:"right"}); y+=5.6; }); return y+3; }
+</script>
+</body>
+</html>
